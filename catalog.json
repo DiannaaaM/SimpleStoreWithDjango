@@ -1,0 +1,117 @@
+[
+{
+    "model": "catalog.category",
+    "pk": 1,
+    "fields": {
+        "name": "Мерч с Комару",
+        "description": "НУ ЭТО ЖЕ КОМАРУ"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 2,
+    "fields": {
+        "name": "Услуги в геншине",
+        "description": "Пройду бездну/театр, прокачаю аккаунт и многое другое, без ПО"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 4,
+    "fields": {
+        "name": "Мерч Панчан",
+        "description": "Мерч с Панчаном для ценителей"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 1,
+    "fields": {
+        "name": "Плюшевая Комару",
+        "description": "Держать на ручках, кормить с ладошек",
+        "image": "product/image/photo_2024-12-02_13-25-38_jWOuVmo.jpg",
+        "category": 1,
+        "price": "8.99",
+        "created_at": "2024-11-29",
+        "updated_at": "2024-12-04"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 2,
+    "fields": {
+        "name": "Фигурка Комару",
+        "description": "Ватрушка",
+        "image": "product/image/Ватрушка.jpg",
+        "category": 1,
+        "price": "4.44",
+        "created_at": "2024-11-29",
+        "updated_at": "2024-12-04"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 3,
+    "fields": {
+        "name": "Компромат на Дениса",
+        "description": "Компромат на Дениса в котором 100+ аргументов",
+        "image": "product/image/photo_2024-12-04_12-59-25.jpg",
+        "category": null,
+        "price": "12",
+        "created_at": "2024-10-12",
+        "updated_at": "2024-12-04"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 4,
+    "fields": {
+        "name": "Бездна",
+        "description": "Пройду бездну в геншине на столько звезд, на сколько это возможно",
+        "image": "",
+        "category": 2,
+        "price": "0",
+        "created_at": "2024-10-15",
+        "updated_at": "2024-12-04"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 5,
+    "fields": {
+        "name": "Театр",
+        "description": "Пройду театр на максимальную сложность",
+        "image": "",
+        "category": 2,
+        "price": "0",
+        "created_at": "2024-12-02",
+        "updated_at": "2024-12-04"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 6,
+    "fields": {
+        "name": "Фарм",
+        "description": "Фарм: примогемов, локаций, артефактов",
+        "image": "",
+        "category": 2,
+        "price": "100",
+        "created_at": "2024-12-01",
+        "updated_at": "2024-12-04"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 9,
+    "fields": {
+        "name": "Панчунез",
+        "description": "Деликатес страны Качания",
+        "image": "",
+        "category": 4,
+        "price": "9991",
+        "created_at": "2019-11-29",
+        "updated_at": "2020-11-29"
+    }
+}
+]
