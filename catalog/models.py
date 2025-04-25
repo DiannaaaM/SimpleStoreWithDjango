@@ -3,7 +3,7 @@ from django.db import models
 
 class Category(models.Model):
     name = models.CharField(max_length=100, verbose_name="Name", help_text="Category Name")
-    description = models.TextField(verbose_name="Description", help_text="Description")
+    description = models.TextField(verbose_name="Description", help_text="Description", blank=True, null=True)
 
     class Meta:
         verbose_name = "Category"
@@ -16,8 +16,9 @@ class Category(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=100, verbose_name="Name", help_text="Product Name")
     price = models.FloatField(verbose_name="Price", help_text="Price")
-    description = models.TextField(verbose_name="Description", help_text="Description")
-    category = models.ForeignKey(Category, verbose_name="Category", help_text="Category", on_delete=models.CASCADE)
+    description = models.TextField(verbose_name="Description", help_text="Description", null=True, blank=True)
+    category = models.ForeignKey(Category, verbose_name="Category", help_text="Category", on_delete=models.CASCADE,
+                                 null=True, blank=True)
     image = models.ImageField(upload_to='images/', verbose_name="Image", null=True, blank=True, help_text="Image")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Date Added", help_text="Date Added", blank=True,
                                       null=True)
