@@ -1,0 +1,25 @@
+{% extends 'blog/base.html' %}
+{% load blog_tags %}
+{% block content %}
+<section class="post-details py-4 bg-light">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card shadow-lg border-0 mb-4">
+          <img src="{{ post.image | media_filter }}" class="card-img-top" alt="Изображение поста">
+          <div class="card-body">
+            <h4 class="card-title mb-3">Название: {{ object.name }}</h4>
+            <p class="card-text"><strong>Описание:</strong> {{ object.description }}</p>
+            <p class="card-text"><strong>Дата создания:</strong> {{ object.created_at }}</p>
+            <p class="card-text"><strong>Просмотров:</strong> {{ object.views_counter }}</p>
+            <div class="d-flex justify-content-between align-items-center mt-4">
+              <a class="btn btn-outline-primary" href="{% url 'blog:posts_list' %}">Вернуться к списку</a>
+              <small class="text-muted">{{ post.created_at }}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

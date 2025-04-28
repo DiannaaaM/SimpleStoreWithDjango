@@ -1,0 +1,24 @@
+{% extends 'blog/base.html' %}
+{% block content %}
+<section class="form-section py-4 bg-white">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-8">
+        <form method="post" enctype="multipart/form-data" class="card p-4 shadow-sm border-0">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <div class="mt-4 text-center">
+            <button type="submit" class="btn btn-success">
+              {% if object %}
+                Сохранить изменения
+              {% else %}
+                Создать новый
+              {% endif %}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

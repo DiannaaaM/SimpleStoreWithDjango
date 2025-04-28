@@ -1,0 +1,30 @@
+{% extends 'blog/base.html' %}
+{% load blog_tags %}
+{% block content %}
+<section class="article-gallery py-4 bg-light">
+  <div class="container">
+    <div class="row justify-content-center text-center">
+      {% for entry in object_list %}
+      <div class="col-6 mb-4">
+        <div class="card shadow border-0">
+          <div class="card-body">
+            <h3 class="card-header">{{ entry.name }}</h3>
+            <ul class="list-group list-group-flush my-3">
+              <li class="list-group-item text-center">
+                {{ entry.description | truncatechars:100 }}
+              </li>
+            </ul>
+            <img src="{{ entry.image | media_filter }}" class="img-fluid" style="height: 360px; width: auto;">
+            <div class="d-flex justify-content-around mt-3">
+              <a class="btn btn-info" href="{% url 'blog:posts_detail' entry.pk %}">Подробнее</a>
+              <a class="btn btn-secondary" href="{% url 'blog:posts_update' entry.pk %}">Редактировать</a>
+              <a class="btn btn-danger" href="{% url 'blog:posts_delete' entry.pk %}">Удалить</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}
