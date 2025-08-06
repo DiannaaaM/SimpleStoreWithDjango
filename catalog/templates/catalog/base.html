@@ -176,7 +176,7 @@
 </div>
 
 <header data-bs-theme="dark">
-    {% include 'includes/inc_menu.html' %}
+    {% include 'catalog/includes/inc_menu.html' %}
 </header>
 
 <main>
@@ -190,7 +190,7 @@
                     просто не пропустили это целиком.{% endblock %}</p>
                 {% block call_to_action %}
                     <p>
-                        <a href="#" class="btn btn-primary my-2">Основное действие</a>
+                        <a class="btn btn-primary" href="{% url 'catalog:products_create'%}" role="button">Создать товар</a>
                         <a href="#" class="btn btn-secondary my-2">Второстепенное действие</a>
                     </p>
                 {% endblock %}
@@ -213,7 +213,7 @@
             <a href="#">Наверх</a>
         </p>
         <p class="mb-1">Пример альбома &copy; Bootstrap, но, пожалуйста, скачайте и настройте его для себя!</p>
-        <p class="mb-0">Новичок в Bootstrap? <a href="/">Посетите домашнюю страницу</a> или прочитайте наше <a
+        <p class="mb-0">Новичок в Bootstrap? <a href="/static">Посетите домашнюю страницу</a> или прочитайте наше <a
                 href="/docs/5.3/getting-started/introduction/">руководство для начинающих</a>.</p>
     </div>
 </footer>
