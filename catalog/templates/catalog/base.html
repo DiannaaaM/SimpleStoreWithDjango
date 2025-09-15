@@ -190,7 +190,9 @@
                     просто не пропустили это целиком.{% endblock %}</p>
                 {% block call_to_action %}
                     <p>
+                        {% if user.is_authenticated %}
                         <a class="btn btn-primary" href="{% url 'catalog:products_create'%}" role="button">Создать товар</a>
+                        {% endif %}
                         <a href="#" class="btn btn-secondary my-2">Второстепенное действие</a>
                     </p>
                 {% endblock %}
