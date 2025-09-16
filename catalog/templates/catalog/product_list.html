@@ -15,8 +15,18 @@
           <div class="d-flex justify-content-between align-items-center mt-3">
             <div class="btn-group">
               <a class="btn btn-secondary" href="{% url 'catalog:product_detail' product.pk %}">Подробнее</a>
-              <a class="btn btn-secondary" href="{% url 'catalog:products_update' product.pk %}">Редактировать</a>
-              <a class="btn btn-secondary" href="{% url 'catalog:products_delete' product.pk %}">Удалить</a>
+              {% if user.is_authenticated and product.owner_id == user.id %}
+                <a class="btn btn-secondary" href="{% url 'catalog:products_update' product.pk %}">Редактировать</a>
+              {% endif %}
+              {% if user.is_authenticated and (product.owner_id == user.id or perms.catalog.delete_product) %}
+                <a class="btn btn-secondary" href="{% url 'catalog:products_delete' product.pk %}">Удалить</a>
+              {% endif %}
+              {% if user.is_authenticated and perms.catalog.can_unpublish_product %}
+                <form method="post" action="{% url 'catalog:product_unpublish' product.pk %}" style="display:inline;">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-warning">Снять с публикации</button>
+                </form>
+              {% endif %}
             </div>
             <small class="text-muted">{{ product.created_at }}</small>
           </div>
