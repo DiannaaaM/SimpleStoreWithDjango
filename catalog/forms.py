@@ -1,6 +1,8 @@
 from django import forms
 from .models import Product
 from django.core.exceptions import ValidationError
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from .models import CustomUser
 
 FORBIDDEN_WORDS = [
     'казино',
@@ -54,3 +56,21 @@ class ProductForm(forms.ModelForm):
             if not image.content_type in ['image/jpeg', 'image/png']:
                 raise ValidationError('Изображение должно быть в формате JPEG или PNG.')
         return image
+
+
+class RegistrationForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+
+    class Meta:
+        model = CustomUser
+        fields = ('email', 'username', 'password1', 'password2')
+
+
+class LoginForm(AuthenticationForm):
+    username = forms.EmailField(label='Email')
+
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ['avatar', 'phone_number', 'country']
