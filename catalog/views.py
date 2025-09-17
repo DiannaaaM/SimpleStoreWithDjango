@@ -5,9 +5,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required, permission_required
 
 from catalog.models import Product, Category
+from catalog.forms import ProductForm
 
-
-# Create your views here.
 
 def home(request):
     products = Product.objects.all()
@@ -31,7 +30,7 @@ class ProductDetailView(LoginRequiredMixin, DetailView):
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
-    fields = ("name", "description", "image", "category", "price")
+    form_class = ProductForm
     success_url = reverse_lazy('catalog:product_list')
 
     def form_valid(self, form):
@@ -47,7 +46,7 @@ class OwnerRequiredMixin(UserPassesTestMixin):
 
 class ProductUpdateView(LoginRequiredMixin, OwnerRequiredMixin, UpdateView):
     model = Product
-    fields = ("name", "description", "image", "category", "price")
+    form_class = ProductForm
     success_url = reverse_lazy('catalog:product_list')
 
 
