@@ -1,0 +1,24 @@
+{% extends 'catalog/base.html' %}
+{% load my_tags %}
+{% block page_title %}Товары категории: {{ category.name }}{% endblock %}
+{% block content %}
+<section class="gallery py-5 bg-light">
+  <div class="container">
+    <h4 class="mb-4">Категория: {{ category.name }}</h4>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+      {% for product in products %}
+      <div class="card shadow-lg">
+        <img src="{{ product.image | media_filter }}">
+        <div class="card-body">
+          <h5 class="card-title">{{ product.name }}</h5>
+          <p class="card-text">{{ product.description|default:'Без описания'|slice:':100' }}</p>
+          <a class="btn btn-secondary" href="{% url 'catalog:product_detail' product.pk %}">Подробнее</a>
+        </div>
+      </div>
+      {% empty %}
+      <p>В этой категории пока нет товаров.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

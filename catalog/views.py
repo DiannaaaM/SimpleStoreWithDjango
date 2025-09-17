@@ -3,8 +3,13 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required, permission_required
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.core.cache import cache
+from django.conf import settings
 
 from catalog.models import Product, Category
+from .services import get_products_by_category
 
 
 # Create your views here.
@@ -24,7 +29,18 @@ def contacts(request):
 class ProductListView(ListView):
     model = Product
 
+    def get_queryset(self):
+        if getattr(settings, 'CACHE_ENABLED', False):
+            cache_key = 'product_list_queryset'
+            products = cache.get(cache_key)
+            if products is None:
+                products = list(super().get_queryset())
+                cache.set(cache_key, products, timeout=300)
+            return products
+        return super().get_queryset()
 
+
+@method_decorator(cache_page(60 * 5), name='dispatch')
 class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
 
@@ -69,3 +85,17 @@ class ProductUnpublishView(LoginRequiredMixin, View):
             product.is_published = False
             product.save(update_fields=['is_published'])
         return redirect('catalog:product_detail', pk=product.pk)
+
+
+class ProductsByCategoryView(ListView):
+    template_name = 'catalog/products_by_category.html'
+    context_object_name = 'products'
+
+    def get_queryset(self):
+        category_id = self.kwargs['category_id']
+        return get_products_by_category(category_id)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category'] = get_object_or_404(Category, pk=self.kwargs['category_id'])
+        return context
