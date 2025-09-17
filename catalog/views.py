@@ -9,7 +9,6 @@ from django.core.cache import cache
 from django.conf import settings
 
 from catalog.models import Product, Category
-from .services import get_products_by_category
 
 
 # Create your views here.
