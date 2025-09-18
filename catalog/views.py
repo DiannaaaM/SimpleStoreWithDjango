@@ -1,13 +1,24 @@
-from django.shortcuts import render, redirect, get_object_or_404
+
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.decorators import login_required, permission_required
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.core.cache import cache
+from django.conf import settings
+
+from catalog.models import Product, Category
 from django.contrib.auth import login, authenticate
 from django.core.mail import send_mail
-from django.contrib.auth.decorators import login_required
 
 from catalog.models import Product, Category
 from catalog.forms import ProductForm, RegistrationForm, LoginForm
 
+
+
+# Create your views here.
 
 def home(request):
     products = Product.objects.all()
@@ -109,23 +120,73 @@ def edit_profile(request):
 class ProductListView(ListView):
     model = Product
 
+    def get_queryset(self):
+        if getattr(settings, 'CACHE_ENABLED', False):
+            cache_key = 'product_list_queryset'
+            products = cache.get(cache_key)
+            if products is None:
+                products = list(super().get_queryset())
+                cache.set(cache_key, products, timeout=300)
+            return products
+        return super().get_queryset()
 
-class ProductDetailView(DetailView):
+
+@method_decorator(cache_page(60 * 5), name='dispatch')
+class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
-    form_class = ProductForm
+    fields = ("name", "description", "image", "category", "price")
+    success_url = reverse_lazy('catalog:product_list')
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
+
+
+class OwnerRequiredMixin(UserPassesTestMixin):
+    def test_func(self):
+        obj = self.get_object()
+        return obj.owner_id == self.request.user.id
+
+
+class ProductUpdateView(LoginRequiredMixin, OwnerRequiredMixin, UpdateView):
+    model = Product
+    fields = ("name", "description", "image", "category", "price")
     success_url = reverse_lazy('catalog:product_list')
 
 
-class ProductUpdateView(UpdateView):
-    model = Product
-    form_class = ProductForm
-    success_url = reverse_lazy('catalog:product_list')
-
-
-class ProductDeleteView(DeleteView):
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('catalog:product_list')
+
+    def dispatch(self, request, *args, **kwargs):
+        obj = self.get_object()
+        if obj.owner_id == request.user.id or request.user.has_perm('catalog.delete_product'):
+            return super().dispatch(request, *args, **kwargs)
+        return redirect('catalog:product_detail', pk=obj.pk)
+
+
+class ProductUnpublishView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        product = get_object_or_404(Product, pk=pk)
+        if request.user.has_perm('catalog.can_unpublish_product'):
+            product.is_published = False
+            product.save(update_fields=['is_published'])
+        return redirect('catalog:product_detail', pk=product.pk)
+
+
+class ProductsByCategoryView(ListView):
+    template_name = 'catalog/products_by_category.html'
+    context_object_name = 'products'
+
+    def get_queryset(self):
+        category_id = self.kwargs['category_id']
+        return get_products_by_category(category_id)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category'] = get_object_or_404(Category, pk=self.kwargs['category_id'])
+        return context

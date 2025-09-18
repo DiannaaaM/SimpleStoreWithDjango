@@ -16,6 +16,18 @@
           <p><strong>Обновлено:</strong> {{ object.updated_at }}</p>
           <div class="d-flex justify-content-between align-items-center mt-3">
             <a class="btn btn-secondary" href="{% url 'catalog:product_list' %}">Вернуться</a>
+            <div>
+              {% if user.is_authenticated and object.owner_id == user.id %}
+                <a class="btn btn-secondary" href="{% url 'catalog:products_update' object.pk %}">Редактировать</a>
+                <a class="btn btn-danger" href="{% url 'catalog:products_delete' object.pk %}">Удалить</a>
+              {% endif %}
+              {% if user.is_authenticated and perms.catalog.can_unpublish_product %}
+                <form method="post" action="{% url 'catalog:product_unpublish' object.pk %}" style="display:inline;">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-warning">Снять с публикации</button>
+                </form>
+              {% endif %}
+            </div>
             <small class="text-muted">{{ product.created_at }}</small>
           </div>
         </div>
