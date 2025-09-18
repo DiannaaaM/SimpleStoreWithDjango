@@ -15,6 +15,9 @@ from pathlib import Path
 
 load_dotenv(override=True)
 
+# Cache flag
+CACHE_ENABLED = os.getenv('CACHE_ENABLED', 'True') == 'True'
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -71,6 +74,30 @@ TEMPLATES = [
         },
     },
 ]
+
+# Redis cache
+if CACHE_ENABLED:
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": os.getenv("REDIS_URL", "redis://127.0.0.1:6379/1"),
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            },
+            "KEY_PREFIX": os.getenv("CACHE_KEY_PREFIX", "basedjango"),
+            "TIMEOUT": int(os.getenv("CACHE_DEFAULT_TIMEOUT", "300")),
+        }
+    }
+else:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "unique-snowflake",
+        }
+    }
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache' if CACHE_ENABLED else 'django.contrib.sessions.backends.db'
+SESSION_CACHE_ALIAS = 'default'
 
 WSGI_APPLICATION = "config.wsgi.application"
 
