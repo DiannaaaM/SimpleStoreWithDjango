@@ -9,6 +9,12 @@ from django.core.cache import cache
 from django.conf import settings
 
 from catalog.models import Product, Category
+try:
+    from mailings.models import Mailing, Client, MailingAttempt
+except Exception:  # pragma: no cover
+    Mailing = None
+    Client = None
+    MailingAttempt = None
 
 
 # Create your views here.
@@ -37,6 +43,27 @@ class ProductListView(ListView):
                 cache.set(cache_key, products, timeout=300)
             return products
         return super().get_queryset()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if Mailing and Client:
+            cache_key = 'homepage_mailing_stats'
+            stats = None
+            if getattr(settings, 'CACHE_ENABLED', False):
+                stats = cache.get(cache_key)
+            if stats is None:
+                total_mailings = Mailing.objects.count()
+                active_mailings = Mailing.objects.filter(status=Mailing.STATUS_RUNNING).count()
+                unique_clients = Client.objects.count()
+                stats = {
+                    'total_mailings': total_mailings,
+                    'active_mailings': active_mailings,
+                    'unique_clients': unique_clients,
+                }
+                if getattr(settings, 'CACHE_ENABLED', False):
+                    cache.set(cache_key, stats, timeout=300)
+            context.update(stats)
+        return context
 
 
 @method_decorator(cache_page(60 * 5), name='dispatch')

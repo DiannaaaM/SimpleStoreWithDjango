@@ -1,0 +1,18 @@
+{% extends 'mailings/base.html' %}
+{% block mailings_content %}
+<h2>Сообщения</h2>
+<p><a class="btn btn-primary" href="{% url 'mailings:message_create' %}">Создать</a></p>
+<ul>
+  {% for obj in object_list %}
+  <li>
+    <a href="{% url 'mailings:message_detail' obj.pk %}">{{ obj.subject }}</a>
+    — <a href="{% url 'mailings:message_update' obj.pk %}">Изменить</a>
+    — <a href="{% url 'mailings:message_delete' obj.pk %}">Удалить</a>
+  </li>
+  {% empty %}
+  <li>Нет данных</li>
+  {% endfor %}
+  </ul>
+{% endblock %}
+
+

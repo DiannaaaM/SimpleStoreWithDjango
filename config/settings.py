@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "catalog",
     "blog",
     "users",
+    "mailings",
 ]
 
 MIDDLEWARE = [

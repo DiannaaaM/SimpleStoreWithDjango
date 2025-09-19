@@ -1,0 +1,15 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+  {% block mailings_content %}{% endblock %}
+  <div class="mt-3">
+    <a href="{% url 'mailings:client_list' %}">Клиенты</a> |
+    <a href="{% url 'mailings:message_list' %}">Сообщения</a> |
+    <a href="{% url 'mailings:mailing_list' %}">Рассылки</a> |
+    <a href="{% url 'mailings:attempt_list' %}">Попытки</a>
+  </div>
+</div>
+{% endblock %}
+
+

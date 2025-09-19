@@ -1,0 +1,20 @@
+{% extends 'mailings/base.html' %}
+{% block mailings_content %}
+<h2>Попытки рассылок</h2>
+<table class="table">
+  <tr><th>Дата</th><th>Рассылка</th><th>Клиент</th><th>Статус</th><th>Ответ</th></tr>
+  {% for obj in object_list %}
+  <tr>
+    <td>{{ obj.attempted_at }}</td>
+    <td><a href="{% url 'mailings:mailing_detail' obj.mailing.pk %}">#{{ obj.mailing.pk }}</a></td>
+    <td>{{ obj.client.email }}</td>
+    <td>{{ obj.get_status_display }}</td>
+    <td>{{ obj.server_response|default:"-" }}</td>
+  </tr>
+  {% empty %}
+  <tr><td colspan="5">Нет данных</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}
+
+
